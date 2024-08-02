@@ -8,16 +8,18 @@ import (
 	"os"
 
 	_ "github.com/tursodatabase/go-libsql"
+	"github.org/tawanr/ft_matcha/internal/models"
 )
 
 type application struct {
 	logger *slog.Logger
 	db     *sql.DB
+	users  *models.UserModel
 }
 
 func main() {
 	addr := flag.String("addr", ":4000", "HTTP network address")
-	dsn := flag.String("dsn", "http://db:8080", "Data source name")
+	dsn := flag.String("dsn", "file:data.db", "Data source name")
 	flag.Parse()
 
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
@@ -28,7 +30,7 @@ func main() {
 	}
 	defer db.Close()
 
-	app := &application{logger: logger, db: db}
+	app := &application{logger: logger, db: db, users: &models.UserModel{DB: db}}
 
 	app.logger.Info("Starting server on ", slog.String("addr", *addr))
 	logger.Error(http.ListenAndServe(*addr, app.routes()).Error())

@@ -14,9 +14,10 @@ services:
     environment:
       - SQLD_NODE=primary
     volumes:
-      - ./data/libsql:/var/lib/sqlddb
+      - ./data/libsql:/var/lib/sqld
     networks:
       - matcha
+    command: "/bin/sqld -d /var/lib/sqld/local.db"
 
 networks:
   matcha:
