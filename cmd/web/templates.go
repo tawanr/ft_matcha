@@ -11,6 +11,7 @@ import (
 type templateData struct {
 	CurrentYear int
 	User        models.User
+	Form        any
 }
 
 func humanDate(t time.Time) string {
