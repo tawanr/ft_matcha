@@ -8,7 +8,10 @@ migration:
 	migrate create -ext sql -dir ./migrations -seq $(name)
 
 migrate:
-	migrate -path=./migrations -database=sqlite3://data/libsql/data.db up
+	migrate -path=./migrations -database=sqlite3://data.db up
 
 init-db:
 	go run internal/tools/initDB.go path=$(path)
+
+tailwind:
+	tailwindcss -i ui/static/css/base_input.css -o ui/static/css/base.css --watch

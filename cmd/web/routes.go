@@ -2,7 +2,7 @@ package main
 
 import "net/http"
 
-func (app *application) routes() *http.ServeMux {
+func (app *application) routes() http.Handler {
 	mux := http.NewServeMux()
 
 	fileServer := http.FileServer(http.Dir("./ui/static/"))
@@ -12,5 +12,5 @@ func (app *application) routes() *http.ServeMux {
 	mux.HandleFunc("GET /user", app.userList)
 	mux.HandleFunc("GET /user/signup", app.userSignup)
 	mux.HandleFunc("POST /user/signup", app.userSignupPost)
-	return mux
+	return app.recoverPanic(app.logRequest(commonHeaders(mux)))
 }

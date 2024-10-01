@@ -1,0 +1,16 @@
+{{define "base"}}
+<!doctype html>
+<html>
+    <head>
+        <meta charset='utf-8'>
+        <title>{{template "title" .}} - matcha</title>
+        <link href="/static/css/base.css" rel="stylesheet">
+    </head>
+    <body>
+        {{template "nav"}}
+        <main>
+            {{template "main" .}}
+        </main>
+    </body>
+</html>
+{{end}}
