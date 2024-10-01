@@ -7,16 +7,22 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"time"
 
+	"github.com/alexedwards/scs/sqlite3store"
+	"github.com/alexedwards/scs/v2"
+	"github.com/go-playground/form/v4"
 	_ "github.com/tursodatabase/go-libsql"
 	"github.org/tawanr/ft_matcha/internal/models"
 )
 
 type application struct {
-	logger        *slog.Logger
-	db            *sql.DB
-	users         *models.UserModel
-	templateCache map[string]*template.Template
+	logger         *slog.Logger
+	db             *sql.DB
+	users          *models.UserModel
+	templateCache  map[string]*template.Template
+	formDecoder    *form.Decoder
+	sessionManager *scs.SessionManager
 }
 
 func main() {
@@ -38,15 +44,29 @@ func main() {
 		os.Exit(1)
 	}
 
+	formDecoder := form.NewDecoder()
+
+	sessionManager := scs.New()
+	sessionManager.Store = sqlite3store.New(db)
+	sessionManager.Lifetime = 12 * time.Hour
+
 	app := &application{
-		logger:        logger,
-		db:            db,
-		users:         &models.UserModel{DB: db},
-		templateCache: templateCache,
+		logger:         logger,
+		db:             db,
+		users:          &models.UserModel{DB: db},
+		templateCache:  templateCache,
+		formDecoder:    formDecoder,
+		sessionManager: sessionManager,
 	}
 
+	srv := &http.Server{
+		Addr:     *addr,
+		Handler:  app.routes(),
+		ErrorLog: slog.NewLogLogger(app.logger.Handler(), slog.LevelError),
+	}
 	app.logger.Info("Starting server", slog.String("addr", *addr))
-	logger.Error(http.ListenAndServe(*addr, app.routes()).Error())
+	err = srv.ListenAndServe()
+	logger.Error(err.Error())
 	os.Exit(1)
 }
 

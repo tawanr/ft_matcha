@@ -17,10 +17,10 @@ func (app *application) userList(w http.ResponseWriter, r *http.Request) {
 }
 
 type userSignupForm struct {
-	Name     string
-	Email    string
-	Password string
-	validator.Validator
+	Name                string `form:"name"`
+	Email               string `form:"email"`
+	Password            string `form:"password"`
+	validator.Validator `form:"-"`
 }
 
 func (app *application) userSignup(w http.ResponseWriter, r *http.Request) {
@@ -30,16 +30,12 @@ func (app *application) userSignup(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) userSignupPost(w http.ResponseWriter, r *http.Request) {
-	err := r.ParseForm()
+	var form userSignupForm
+
+	err := app.decodePostForm(r, &form)
 	if err != nil {
 		app.clientError(w, http.StatusBadRequest)
 		return
-	}
-
-	form := userSignupForm{
-		Name:     r.Form.Get("name"),
-		Email:    r.Form.Get("email"),
-		Password: r.Form.Get("password"),
 	}
 
 	form.CheckField(validator.NotBlank("name"), "name", "Name is required")
@@ -55,6 +51,7 @@ func (app *application) userSignupPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Printf("signup post %+v\n", form)
+	app.sessionManager.Put(r.Context(), "registered", form.Email)
 
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
