@@ -65,7 +65,7 @@ func main() {
 		ErrorLog: slog.NewLogLogger(app.logger.Handler(), slog.LevelError),
 	}
 	app.logger.Info("Starting server", slog.String("addr", *addr))
-	err = srv.ListenAndServe()
+	err = srv.ListenAndServeTLS("./tls/cert.pem", "./tls/key.pem")
 	logger.Error(err.Error())
 	os.Exit(1)
 }
