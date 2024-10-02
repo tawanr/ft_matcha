@@ -2,7 +2,11 @@
 module.exports = {
   content: ["./ui/html/**/*.{html,js,tmpl}"],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ["Inter var", ...defaultTheme.fontFamily.sans],
+      },
+    },
   },
-  plugins: [],
+  plugins: [require("@tailwindcss/forms")],
 };

@@ -1,16 +1,20 @@
 {{define "base"}}
 <!doctype html>
 <html>
-    <head>
-        <meta charset='utf-8'>
-        <title>{{template "title" .}} - matcha</title>
-        <link href="/static/css/base.css" rel="stylesheet">
-    </head>
-    <body>
-        {{template "nav"}}
-        <main>
-            {{template "main" .}}
-        </main>
-    </body>
+
+<head>
+  <meta charset='utf-8'>
+  <title>{{template "title" .}} - matcha</title>
+  <link href="/static/css/base.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+</head>
+
+<body class="h-full bg-slate-200">
+  {{template "nav"}}
+  <main class="pt-6">
+    {{template "main" .}}
+  </main>
+</body>
+
 </html>
 {{end}}

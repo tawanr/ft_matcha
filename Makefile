@@ -2,7 +2,7 @@ include .env
 export
 
 db-shell:
-	turso db shell http://db:8080
+	sqlite3 $(DB_HOST)
 
 migration:
 	migrate create -ext sql -dir ./migrations -seq $(name)
@@ -12,6 +12,9 @@ migrate:
 
 init-db:
 	go run internal/tools/initDB.go path=$(path)
+
+test:
+	go test ./...
 
 tailwind:
 	tailwindcss -i ui/static/css/base_input.css -o ui/static/css/base.css --watch

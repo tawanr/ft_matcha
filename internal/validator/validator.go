@@ -1,17 +1,21 @@
 package validator
 
 import (
+	"regexp"
 	"slices"
 	"strings"
 	"unicode/utf8"
 )
 
+var EmailRX = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
+
 type Validator struct {
-	FieldErrors map[string]string
+	NonFieldErrors []string
+	FieldErrors    map[string]string
 }
 
 func (v *Validator) Valid() bool {
-	return len(v.FieldErrors) == 0
+	return len(v.FieldErrors) == 0 && len(v.NonFieldErrors) == 0
 }
 
 func (v *Validator) AddFieldError(field, message string) {
@@ -19,9 +23,13 @@ func (v *Validator) AddFieldError(field, message string) {
 		v.FieldErrors = map[string]string{}
 	}
 
-	if _, exists := v.FieldErrors[field]; exists {
+	if _, exists := v.FieldErrors[field]; !exists {
 		v.FieldErrors[field] = message
 	}
+}
+
+func (v *Validator) AddNonFieldError(message string) {
+	v.NonFieldErrors = append(v.NonFieldErrors, message)
 }
 
 func (v *Validator) CheckField(ok bool, key, message string) {
@@ -44,4 +52,8 @@ func MaxChars(value string, max int) bool {
 
 func PermittedValue[T comparable](value T, permittedValues ...T) bool {
 	return slices.Contains(permittedValues, value)
+}
+
+func Matches(value string, rx *regexp.Regexp) bool {
+	return rx.MatchString(value)
 }

@@ -5,5 +5,5 @@ CREATE TABLE IF NOT EXISTS users (
     password CHAR(60) NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(name, email)
+    UNIQUE(email)
 );

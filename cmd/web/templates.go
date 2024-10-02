@@ -2,20 +2,28 @@ package main
 
 import (
 	"html/template"
+	"io/fs"
 	"path/filepath"
 	"time"
 
 	"github.org/tawanr/ft_matcha/internal/models"
+	"github.org/tawanr/ft_matcha/ui"
 )
 
 type templateData struct {
-	CurrentYear int
-	User        models.User
-	Form        any
+	CurrentYear     int
+	User            models.User
+	Form            any
+	Flash           string
+	isAuthenticated bool
+	CSRFToken       string
 }
 
 func humanDate(t time.Time) string {
-	return t.Format("Jan 2, 2006")
+	if t.IsZero() {
+		return ""
+	}
+	return t.Format("2 Jan 2006")
 }
 
 var functions = template.FuncMap{
@@ -25,11 +33,11 @@ var functions = template.FuncMap{
 func newTemplateCache() (map[string]*template.Template, error) {
 	cache := map[string]*template.Template{}
 
-	pages, err := filepath.Glob("./ui/html/pages/*.go.tmpl")
+	pages, err := fs.Glob(ui.Files, "html/pages/*.go.tmpl")
 	if err != nil {
 		return nil, err
 	}
-	nested, err := filepath.Glob("./ui/html/pages/**/*.go.tmpl")
+	nested, err := fs.Glob(ui.Files, "html/pages/**/*.go.tmpl")
 	pages = append(pages, nested...)
 
 	if err != nil {
@@ -38,17 +46,12 @@ func newTemplateCache() (map[string]*template.Template, error) {
 
 	for _, page := range pages {
 		name := filepath.Base(page)
-		ts, err := template.New(name).Funcs(functions).ParseFiles("./ui/html/base.go.tmpl")
-		if err != nil {
-			return nil, err
+		patterns := []string{
+			"html/base.go.tmpl",
+			"html/partials/*.go.tmpl",
+			page,
 		}
-
-		ts, err = ts.ParseGlob("./ui/html/partials/*.go.tmpl")
-		if err != nil {
-			return nil, err
-		}
-
-		ts, err = ts.ParseFiles(page)
+		ts, err := template.New(name).Funcs(functions).ParseFS(ui.Files, patterns...)
 		if err != nil {
 			return nil, err
 		}
