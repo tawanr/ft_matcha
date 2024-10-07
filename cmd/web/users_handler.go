@@ -26,6 +26,13 @@ type userLoginForm struct {
 	validator.Validator `form:"-"`
 }
 
+type profileForm struct {
+	Bio                 string `form:"bio"`
+	Gender              int    `form:"gender"`
+	Preferences         []int  `form:"preferences"`
+	validator.Validator `form:"-"`
+}
+
 func (app *application) userSignup(w http.ResponseWriter, r *http.Request) {
 	data := app.newTemplateData(r)
 	data.Form = userSignupForm{}
@@ -138,5 +145,38 @@ func (app *application) userLogoutPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) userProfile(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "profile")
+	data := app.newTemplateData(r)
+	data.Form = profileForm{}
+	app.render(w, r, http.StatusOK, "profile.go.tmpl", data)
+}
+
+func (app *application) userProfilePost(w http.ResponseWriter, r *http.Request) {
+	var form profileForm
+
+	err := app.decodePostForm(r, &form)
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	if !form.Valid() {
+		data := app.newTemplateData(r)
+		data.Form = form
+		app.render(w, r, http.StatusOK, "profile.go.tmpl", data)
+		return
+	}
+
+	fmt.Printf("%#v\n", form)
+
+	// err = app.users.UpdateProfile(r.Context(), form.Gender, form.Preferences)
+	// if err != nil {
+	// 	if errors.Is(err, models.ErrNoRecord) {
+	// 		app.clientError(w, http.StatusBadRequest)
+	// 		return
+	// 	}
+	// 	app.serverError(w, r, err)
+	// 	return
+	// }
+
+	http.Redirect(w, r, "/user/profile", http.StatusSeeOther)
 }

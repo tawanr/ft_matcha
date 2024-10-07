@@ -6,7 +6,8 @@ import (
 	"strings"
 	"time"
 
-	_ "github.com/tursodatabase/go-libsql"
+	_ "github.com/mattn/go-sqlite3"
+	// _ "github.com/tursodatabase/go-libsql"
 	"golang.org/x/crypto/bcrypt"
 )
 

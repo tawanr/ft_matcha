@@ -14,7 +14,7 @@ init-db:
 	go run internal/tools/initDB.go path=$(path)
 
 test:
-	go test ./...
+	go test -v ./...
 
 tailwind:
 	tailwindcss -i ui/static/css/base_input.css -o ui/static/css/base.css --watch

@@ -13,7 +13,7 @@ import (
 	"github.com/alexedwards/scs/sqlite3store"
 	"github.com/alexedwards/scs/v2"
 	"github.com/go-playground/form/v4"
-	_ "github.com/tursodatabase/go-libsql"
+	_ "github.com/mattn/go-sqlite3"
 	"github.org/tawanr/ft_matcha/internal/models"
 )
 
@@ -82,7 +82,7 @@ func main() {
 }
 
 func openDB(dsn string) (*sql.DB, error) {
-	db, err := sql.Open("libsql", dsn)
+	db, err := sql.Open("sqlite3", dsn)
 	if err != nil {
 		return nil, err
 	}

@@ -17,6 +17,7 @@ type templateData struct {
 	Flash           string
 	isAuthenticated bool
 	CSRFToken       string
+	Profile         models.Profile
 }
 
 func humanDate(t time.Time) string {
@@ -26,8 +27,18 @@ func humanDate(t time.Time) string {
 	return t.Format("2 Jan 2006")
 }
 
+func hasValue[T comparable](values []T, value T) bool {
+	for _, v := range values {
+		if v == value {
+			return true
+		}
+	}
+	return false
+}
+
 var functions = template.FuncMap{
-	"humanDate": humanDate,
+	"humanDate":   humanDate,
+	"hasValueInt": hasValue[int],
 }
 
 func newTemplateCache() (map[string]*template.Template, error) {

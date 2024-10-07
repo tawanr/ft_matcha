@@ -11,6 +11,10 @@ func (app *application) routes() http.Handler {
 	mux := http.NewServeMux()
 
 	mux.Handle("GET /static/", http.FileServerFS(ui.Files))
+	mux.HandleFunc("GET /ping", ping)
+
+	fileServer := http.FileServer(http.Dir("./ui/public/"))
+	mux.Handle("GET /public/", http.StripPrefix("/public/", fileServer))
 
 	dynamic := alice.New(app.sessionManager.LoadAndSave, noSurf, app.authenticate)
 
@@ -24,6 +28,7 @@ func (app *application) routes() http.Handler {
 	protected := dynamic.Append(app.requireAuthentication)
 	mux.Handle("POST /user/logout", protected.ThenFunc(app.userLogoutPost))
 	mux.Handle("GET /user/profile", protected.ThenFunc(app.userProfile))
+	mux.Handle("POST /user/profile", protected.ThenFunc(app.userProfilePost))
 
 	standard := alice.New(app.recoverPanic, app.logRequest, commonHeaders)
 	return standard.Then(mux)
