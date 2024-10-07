@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.org/tawanr/ft_matcha/internal/models"
-	"github.org/tawanr/ft_matcha/ui"
+	"github.com/tawanr/ft_matcha/internal/models"
+	"github.com/tawanr/ft_matcha/ui"
 )
 
 type templateData struct {

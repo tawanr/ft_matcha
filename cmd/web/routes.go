@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/justinas/alice"
-	"github.org/tawanr/ft_matcha/ui"
+	"github.com/tawanr/ft_matcha/ui"
 )
 
 func (app *application) routes() http.Handler {

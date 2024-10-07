@@ -8,16 +8,27 @@ import (
 	"net/http/cookiejar"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/tawanr/ft_matcha/internal/models"
+	"github.com/tawanr/ft_matcha/internal/models/mocks"
 )
 
 func newTestApplication(t *testing.T) *application {
 	return &application{
 		logger: slog.New(slog.NewTextHandler(io.Discard, nil)),
+		models: NewMockModels(),
 	}
 }
 
 type testServer struct {
 	*httptest.Server
+}
+
+func NewMockModels() *models.Models {
+	return &models.Models{
+		Users:    &mocks.UserModelMock{},
+		Profiles: &mocks.ProfileModelMock{},
+	}
 }
 
 func newTestServer(t *testing.T, h http.Handler) *testServer {

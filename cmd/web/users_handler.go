@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.org/tawanr/ft_matcha/internal/models"
-	"github.org/tawanr/ft_matcha/internal/validator"
+	"github.com/tawanr/ft_matcha/internal/models"
+	"github.com/tawanr/ft_matcha/internal/validator"
 )
 
 func (app *application) userList(w http.ResponseWriter, r *http.Request) {
@@ -62,7 +62,7 @@ func (app *application) userSignupPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = app.users.Insert(form.Name, form.Email, form.Password)
+	err = app.models.Users.Insert(form.Name, form.Email, form.Password)
 	if err != nil {
 		if errors.Is(err, models.ErrDuplicateEmail) {
 			form.AddFieldError("email", "Email already exists")
@@ -109,7 +109,7 @@ func (app *application) userLoginPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := app.users.Authenticate(form.Email, form.Password)
+	id, err := app.models.Users.Authenticate(form.Email, form.Password)
 	if err != nil {
 		if errors.Is(err, models.ErrInvalidCredentials) {
 			form.AddNonFieldError("Invalid email or password")

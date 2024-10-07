@@ -27,6 +27,12 @@ type Profile struct {
 	Images       []Image
 }
 
+type ProfileInterface interface {
+	Get(id int) (*Profile, error)
+	Insert(userID int, gender GenderType, preferences []GenderType, bio string) (*Profile, error)
+	Update(userID int, gender GenderType, preferences []GenderType, bio string) (*Profile, error)
+}
+
 type ProfileModel struct {
 	DB *sql.DB
 }

@@ -14,13 +14,14 @@ import (
 	"github.com/alexedwards/scs/v2"
 	"github.com/go-playground/form/v4"
 	_ "github.com/mattn/go-sqlite3"
-	"github.org/tawanr/ft_matcha/internal/models"
+	"github.com/tawanr/ft_matcha/internal/models"
 )
 
 type application struct {
-	logger         *slog.Logger
-	db             *sql.DB
-	users          *models.UserModel
+	logger *slog.Logger
+	db     *sql.DB
+	// users          *models.UserModel
+	models         *models.Models
 	templateCache  map[string]*template.Template
 	formDecoder    *form.Decoder
 	sessionManager *scs.SessionManager
@@ -52,9 +53,10 @@ func main() {
 	sessionManager.Lifetime = 12 * time.Hour
 
 	app := &application{
-		logger:         logger,
-		db:             db,
-		users:          &models.UserModel{DB: db},
+		logger: logger,
+		db:     db,
+		// users:          &models.UserModel{DB: db},
+		models:         models.NewModels(db),
 		templateCache:  templateCache,
 		formDecoder:    formDecoder,
 		sessionManager: sessionManager,

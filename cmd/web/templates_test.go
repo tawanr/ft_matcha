@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.org/tawanr/ft_matcha/internal/assert"
+	"github.com/tawanr/ft_matcha/internal/assert"
 )
 
 func TestHumanDate(t *testing.T) {

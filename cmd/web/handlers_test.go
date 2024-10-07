@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.org/tawanr/ft_matcha/internal/assert"
+	"github.com/tawanr/ft_matcha/internal/assert"
 )
 
 func TestPing(t *testing.T) {

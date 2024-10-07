@@ -1,4 +1,4 @@
-module github.org/tawanr/ft_matcha
+module github.com/tawanr/ft_matcha
 
 go 1.22.5
 
