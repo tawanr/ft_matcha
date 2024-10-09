@@ -29,6 +29,8 @@ func (app *application) routes() http.Handler {
 	mux.Handle("POST /user/logout", protected.ThenFunc(app.userLogoutPost))
 	mux.Handle("GET /user/profile", protected.ThenFunc(app.userProfile))
 	mux.Handle("POST /user/profile", protected.ThenFunc(app.userProfilePost))
+	mux.Handle("GET /user/profile/card/{id}", protected.ThenFunc(app.userProfileCard))
+	mux.Handle("POST /user/profile/image", protected.ThenFunc(app.userProfileImage))
 
 	standard := alice.New(app.recoverPanic, app.logRequest, commonHeaders)
 	return standard.Then(mux)

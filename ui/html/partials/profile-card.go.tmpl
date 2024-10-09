@@ -1,6 +1,67 @@
 {{define "profile-card"}}
-<div class="max-w[20rem] rounded-xl p-4 drop-shadow-md bg-teal-50">
-  <h3 class="font-bold text-2xl font-sans">Name</h3>
-  <h4 class="font-bold text-l font-sans">34</h4>
-</div>
-{{end}}
+<div id="profile-card">
+  <div class="max-w[20rem] rounded-xl p-4 drop-shadow-md bg-teal-50">
+    <h3 class="font-bold text-2xl font-sans">{{ .Name }}</h3>
+    <h4 class="font-bold text-l font-sans">{{ .Age }}, {{ genderString .Gender }}</h4>
+    <template id="card-content-template">
+      <div id="card-image">
+        <img src="" />
+      </div>
+    </template>
+    <div class="w-auto my-2 bg-white rounded-md drop-shadow-sm aspect-square relative" id="card-content">
+      <img src="" class="object-cover w-full h-full aspect-square" />
+      <button id="image-prev" onclick="prev()" class="rounded-full bg-slate-400 opacity-30 absolute left-1 top-1/2"><img
+          src="/static/img/chevron-left.svg" class="h-6 w-6 text-white" /></button>
+      <button id="image-next" onclick="next()"
+        class="rounded-full bg-slate-400 opacity-30 absolute right-1 top-1/2"><img src="/static/img/chevron-right.svg"
+          class="h-6 w-6 text-white" /></button>
+      <div class="absolute bottom-2 left-1/2 -translate-x-1/2 flex flex-row gap-1">
+        {{range .Images}}
+        <div class="carousel-pip flex flex-col min-w-2 max-w-2 aspect-square rounded-full bg-slate-500 opacity-30">
+        </div>
+        {{end}}
+      </div>
+    </div>
+    <span class="text-sm text-slate-900">{{ .Bio }}</span>
+  </div>
+  <script>
+    let picNum = 0;
+    const images = JSON.parse(`{{ jsonMarshal .Images }}`);
+    function prev() {
+      if (picNum <= 0) {
+        return;
+      }
+      picNum--;
+      carousel();
+    }
+    function next() {
+      if (picNum == images.length - 1) {
+        return;
+      }
+      picNum++;
+      carousel();
+    }
+    function carousel() {
+      const prevBtn = document.getElementById("image-prev");
+      const nextBtn = document.getElementById("image-next");
+      prevBtn.classList.remove("hidden");
+      nextBtn.classList.remove("hidden");
+      if (picNum == 0) {
+        prevBtn.classList.add("hidden");
+      }
+      if (picNum == images.length - 1) {
+        nextBtn.classList.add("hidden");
+      }
+      if (images.length > 0) {
+        const content = document.getElementById("card-content");
+        const img = content.getElementsByTagName("img")[0];
+        img.src = images[picNum];
+      }
+      const pips = document.getElementsByClassName("carousel-pip");
+      for (let i = 0; i < pips.length; i++) {
+        pips[i].style.opacity = i == picNum ? "1" : "0.3";
+      }
+    }
+    carousel();
+  </script>
+  {{end}}

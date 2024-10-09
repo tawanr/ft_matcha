@@ -26,3 +26,4 @@ tmp
 .env
 data.db
 tls/
+ui/public/images

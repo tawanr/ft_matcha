@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"html/template"
 	"io/fs"
 	"path/filepath"
@@ -36,9 +37,32 @@ func hasValue[T comparable](values []T, value T) bool {
 	return false
 }
 
+func genderString(g models.GenderType) string {
+	switch g {
+	case 0:
+		return "Male"
+	case 1:
+		return "Female"
+	case 2:
+		return "Other"
+	default:
+		return ""
+	}
+}
+
+func jsonMarshal(v any) string {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return ""
+	}
+	return string(b)
+}
+
 var functions = template.FuncMap{
-	"humanDate":   humanDate,
-	"hasValueInt": hasValue[int],
+	"humanDate":    humanDate,
+	"hasValueInt":  hasValue[int],
+	"genderString": genderString,
+	"jsonMarshal":  jsonMarshal,
 }
 
 func newTemplateCache() (map[string]*template.Template, error) {

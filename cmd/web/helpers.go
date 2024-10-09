@@ -4,13 +4,17 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"html/template"
+	"io/fs"
 	"log/slog"
 	"net/http"
+	"path/filepath"
 	"runtime/debug"
 	"time"
 
 	"github.com/go-playground/form/v4"
 	"github.com/justinas/nosurf"
+	"github.com/tawanr/ft_matcha/ui"
 )
 
 func (app *application) serverError(w http.ResponseWriter, r *http.Request, err error) {
@@ -47,6 +51,36 @@ func (app *application) render(w http.ResponseWriter, r *http.Request, status in
 
 	buf := new(bytes.Buffer)
 	err := ts.ExecuteTemplate(buf, "base", data)
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	w.WriteHeader(status)
+	buf.WriteTo(w)
+}
+
+func (app *application) renderPartial(w http.ResponseWriter, r *http.Request, status int, page string, data templateData) {
+	path := "html/pages/" + page
+	pages, err := fs.Glob(ui.Files, path)
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+	if len(pages) == 0 {
+		app.serverError(w, r, fmt.Errorf("template %s not found", page))
+		return
+	}
+	renderPage := pages[0]
+	name := filepath.Base(renderPage)
+	ts, err := template.New(name).Funcs(functions).ParseFS(ui.Files, renderPage, "html/partials/*.go.tmpl")
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	buf := new(bytes.Buffer)
+	err = ts.ExecuteTemplate(buf, "partial-base", data)
 	if err != nil {
 		app.serverError(w, r, err)
 		return

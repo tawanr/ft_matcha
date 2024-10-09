@@ -25,3 +25,5 @@ require (
 )
 
 require github.com/tursodatabase/go-libsql v0.0.0-20240916111504-922dfa87e1e6
+
+require golang.org/x/text v0.19.0

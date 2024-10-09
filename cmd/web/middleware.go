@@ -12,8 +12,9 @@ import (
 func commonHeaders(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Server", "matcha-go")
+		// TODO: Change CSP to nonce or hash
 		w.Header().Set("Content-Security-Policy",
-			"default-src 'self'; style-src 'self' fonts.googleapis.com; font-src fonts.gstatic.com")
+			"default-src 'self'; style-src 'self' 'unsafe-inline' fonts.googleapis.com rsms.me; font-src fonts.gstatic.com rsms.me; script-src 'self' 'unsafe-inline' https://unpkg.com")
 
 		w.Header().Set("Referrer-Policy", "origin-when-cross-origin")
 		w.Header().Set("X-Content-Type-Options", "nosniff")
